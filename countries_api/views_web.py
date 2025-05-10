@@ -5,7 +5,9 @@ from .models import Country
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required # Import decorator
 
-@login_required # Add this decorator
+from .models import Country # if not already there
+
+@login_required
 def country_list_view(request):
     query = request.GET.get('q', '')
     countries_list = Country.objects.all().order_by('name_common')
@@ -16,6 +18,15 @@ def country_list_view(request):
             Q(name_official__icontains=query) |
             Q(cca2__iexact=query)
         )
+
+    # --- BEGIN DEBUG ---
+    if countries_list.exists():
+        first_country_for_debug = countries_list.first()
+        if first_country_for_debug:
+            print(f"DEBUG: Country: {first_country_for_debug.name_common}")
+            print(f"DEBUG: country.languages type: {type(first_country_for_debug.languages)}")
+            print(f"DEBUG: country.languages value: {repr(first_country_for_debug.languages)}")
+    # --- END DEBUG ---
 
     paginator = Paginator(countries_list, 25)
     page_number = request.GET.get('page')

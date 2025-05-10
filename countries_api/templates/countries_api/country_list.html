@@ -1,3 +1,5 @@
+{% load app_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,7 +93,7 @@
                                     data-cca2="{{ country.cca2 }}"
                                     data-country-name="{{ country.name_common }}"
                                     data-country-region="{{ country.region|default:'' }}"
-                                    data-country-languages='{{ country.languages|default:"{}"|escapejs }}'> 
+                                    data-country-languages='{{ country.languages|to_json_object_string }}'> 
                                 Details
                             </button>
                         </td>
@@ -166,17 +168,18 @@
                 const cca2 = button.getAttribute('data-cca2');
                 const countryName = button.getAttribute('data-country-name');
                 const countryRegion = button.getAttribute('data-country-region');
-                // Parse the languages JSON string carefully
+                
                 let countryLanguages = {};
                 try {
-                    // The languages data attribute might be HTML escaped, needs careful parsing
-                    const languagesJsonString = button.getAttribute('data-country-languages').replace(/"/g, '"');
-                    countryLanguages = JSON.parse(languagesJsonString);
+                    // The data attribute now contains a valid JSON string for an object
+                    const languagesJsonString = button.getAttribute('data-country-languages');
+                    // The .replace(/"/g, '"') call was incorrect for this issue and is removed.
+                    countryLanguages = JSON.parse(languagesJsonString); 
                 } catch (e) {
-                    console.error("Error parsing languages JSON:", e, button.getAttribute('data-country-languages'));
-                    countryLanguages = {};
+                    // Log the raw attribute value as it was received by JS, for better debugging
+                    console.error("Error parsing languages JSON:", e, "Raw attribute value:", button.getAttribute('data-country-languages'));
+                    countryLanguages = {}; // Fallback to an empty object
                 }
-
 
                 const modalTitle = countryDetailsModal.querySelector('.modal-title');
                 const modalCountryNameEl = document.getElementById('modalCountryName');
@@ -189,7 +192,7 @@
                 modalSameLanguageCountriesEl.innerHTML = 'Loading language information...';
 
                 // Fetch and display regional countries
-                if (countryRegion) { // Only fetch if region exists
+                if (countryRegion) { 
                     try {
                         const regionalResponse = await fetch(`/api/countries/${cca2}/regional-countries/`);
                         if (!regionalResponse.ok) throw new Error(`HTTP error! status: ${regionalResponse.status}`);
@@ -213,9 +216,9 @@
                      modalRegionalCountriesEl.innerHTML = '<p>No region information available for this country.</p>';
                 }
 
-
                 // Fetch and display countries speaking same languages
-                if (countryLanguages && Object.keys(countryLanguages).length > 0) {
+                // countryLanguages is now guaranteed to be an object (empty if no languages or parse error)
+                if (Object.keys(countryLanguages).length > 0) {
                     let allSameLanguageHtml = '';
                     for (const langCode in countryLanguages) {
                         const langName = countryLanguages[langCode];
@@ -242,9 +245,9 @@
                             allSameLanguageHtml += `<p class="text-danger">Could not load countries for language ${langName}.</p>`;
                         }
                     }
-                    modalSameLanguageCountriesEl.innerHTML = allSameLanguageHtml || '<p>No primary language information to compare.</p>';
+                    modalSameLanguageCountriesEl.innerHTML = allSameLanguageHtml; // No need for '||' check if empty string is acceptable
                 } else {
-                    modalSameLanguageCountriesEl.innerHTML = '<p>No language information available for this country.</p>';
+                    modalSameLanguageCountriesEl.innerHTML = '<p>No language information available for this country or an error occurred.</p>';
                 }
             });
         });
