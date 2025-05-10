@@ -1,3 +1,4 @@
+# countries_api/models.py
 from django.db import models
 
 class Country(models.Model):
@@ -22,20 +23,31 @@ class Country(models.Model):
     flag_svg_url = models.URLField(max_length=500, null=True, blank=True)
     flag_alt_text = models.TextField(null=True, blank=True)
     
-    # Additional potentially useful fields from JSON (can be added if needed)
-    # tld = models.JSONField(null=True, blank=True)
-    # latlng = models.JSONField(null=True, blank=True)
-    # area = models.FloatField(null=True, blank=True)
-    # borders = models.JSONField(null=True, blank=True) # List of cca3 codes
-    # demonyms = models.JSONField(null=True, blank=True)
-    # continents = models.JSONField(null=True, blank=True)
-    # timezones = models.JSONField(null=True, blank=True)
-    # coat_of_arms_png_url = models.URLField(max_length=500, null=True, blank=True)
-    # coat_of_arms_svg_url = models.URLField(max_length=500, null=True, blank=True)
-    # start_of_week = models.CharField(max_length=20, null=True, blank=True)
-    # capital_info_latlng = models.JSONField(null=True, blank=True)
-    # postal_code_format = models.CharField(max_length=255, null=True, blank=True)
-    # postal_code_regex = models.CharField(max_length=255, null=True, blank=True)
+    # Additional fields that could be useful (from your JSON sample)
+    tld = models.JSONField(null=True, blank=True, help_text="Top-level domain(s)")
+    independent = models.BooleanField(null=True, blank=True)
+    status = models.CharField(max_length=50, null=True, blank=True)
+    un_member = models.BooleanField(null=True, blank=True, verbose_name="UN Member")
+    idd = models.JSONField(null=True, blank=True, help_text="International direct dialing info")
+    alt_spellings = models.JSONField(null=True, blank=True, help_text="Alternative spellings")
+    latlng = models.JSONField(null=True, blank=True, help_text="Latitude and Longitude")
+    landlocked = models.BooleanField(null=True, blank=True)
+    borders = models.JSONField(null=True, blank=True, help_text="List of cca3 codes of bordering countries")
+    area = models.FloatField(null=True, blank=True)
+    demonyms = models.JSONField(null=True, blank=True)
+    # 'flag' field stores unicode emoji, not suitable for direct model field, use flag_png/svg_url
+    maps = models.JSONField(null=True, blank=True, help_text="Links to Google Maps and OpenStreetMaps")
+    gini = models.JSONField(null=True, blank=True, help_text="Gini coefficient by year") # Gini is often year-specific
+    fifa = models.CharField(max_length=10, null=True, blank=True, help_text="FIFA country code")
+    car = models.JSONField(null=True, blank=True, help_text="Car signs and side of road")
+    timezones = models.JSONField(null=True, blank=True)
+    continents = models.JSONField(null=True, blank=True)
+    coat_of_arms_png_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Coat of Arms PNG")
+    coat_of_arms_svg_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Coat of Arms SVG")
+    start_of_week = models.CharField(max_length=20, null=True, blank=True)
+    capital_info = models.JSONField(null=True, blank=True, help_text="Capital coordinates")
+    postal_code = models.JSONField(null=True, blank=True, help_text="Postal code format and regex")
+    translations = models.JSONField(null=True, blank=True, help_text="Country name translations")
 
 
     class Meta:
