@@ -1,4 +1,4 @@
-# Country Explorer 🌍 (Code Fusion AI - Python Developer Assignment)
+# Country Explorer 🌍
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Django Version](https://img.shields.io/badge/django-3.2%2B-green.svg)](https://www.djangoproject.com/)
@@ -91,43 +91,6 @@ A simple web interface for authenticated users:
 *   **HTTP Client:** `requests` library (for external API communication)
 *   **Templating:** Django Template Language (DTL)
 *   **Version Control:** Git
-
-## 📁 Project Structure
-
-
-CF-AI/
-├── country_explorer/ # Django project configuration
-│ ├── init.py
-│ ├── asgi.py
-│ ├── settings.py # Main project settings
-│ ├── urls.py # Root URL configurations
-│ └── wsgi.py
-├── countries_api/ # Core Django application
-│ ├── init.py
-│ ├── admin.py # Django admin configurations
-│ ├── apps.py
-│ ├── management/
-│ │ └── commands/
-│ │ └── fetch_countries.py # Custom data fetching command
-│ ├── migrations/ # Database migrations
-│ ├── models.py # Database models (Country model)
-│ ├── serializers.py # DRF serializers for Country model
-│ ├── templates/
-│ │ ├── countries_api/
-│ │ │ └── country_list.html # Main web view template
-│ │ └── registration/
-│ │ └── login.html # Login page template
-│ ├── templatetags/ # Custom template tags/filters (if any)
-│ ├── tests.py
-│ ├── urls.py # API URL configurations
-│ ├── urls_web.py # Web interface URL configurations
-│ ├── views.py # API views (DRF ViewSets)
-│ └── views_web.py # Web interface views
-├── venv/ # Python virtual environment (recommended)
-├── db.sqlite3 # SQLite database file (created after migration)
-├── manage.py # Django's command-line utility
-├── requirements.txt # Project dependencies
-└── README.md # This file
 
 ## 🚀 Prerequisites
 
